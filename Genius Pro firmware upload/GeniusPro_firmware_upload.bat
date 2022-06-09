@@ -1,0 +1,1 @@
+.\dfu-util -w -a 0 -D firmware.bin -s 0x08000000:leave
