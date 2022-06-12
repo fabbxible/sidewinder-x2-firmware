@@ -1,0 +1,15 @@
+1. Copy firmware.bin from .pio/build/swx2/firmware.bin to this folder (replace the old file if an older version is present).
+2. Run SWX2_firmware_upload.bat
+3. Power off SWX2.
+4. Connect Pin BOOT0 and pin 3.3V with a jumper on Artillery Ruby v1.2 mainboard.
+5. Connect PC and printer with a printer USB (Type-B) cable.
+6. Printer screen will start and beep, SWX2_firmware_upload window will run and then close by itself.
+7. Remove the jumper that connect BOOT0 and 3.3V pin.
+8. Wait for mainboard to restart and confirm printer status on printer touch screen.
+
+
+Alternative Method
+https://github.com/mjrama/Marlin/blob/2.0.x/How%20to%20Upgrade%20Marlin%20Firmware%20On%20Artillery%20Hornet.pdf
+
+Touch Screen Firmware
+https://www.thingiverse.com/thing:5157805
