@@ -69,7 +69,7 @@
 // @section info
 
 //#define SWX2
-//#define GP
+//#define GENIUSPRO
 
 // Author info of this build printed to the host during boot and M115
 #define STRING_CONFIG_H_AUTHOR "Season, Fabbxible" // Who made the changes.
@@ -146,10 +146,12 @@
 #endif
 
 // Name displayed in the LCD "Ready" message and Info menu
-#if ENABLED(GP)
+#if ENABLED(GENIUSPRO)
   #define CUSTOM_MACHINE_NAME "Artillery Genius Pro EVO"
-#else
+#elif ENABLED(SIDEWINDERX2)
   #define CUSTOM_MACHINE_NAME "Artillery Sidewinder X2 EVO"
+#else
+  #error "Undefined Machine"
 #endif
 
 // Printer's unique ID, used by some programs to differentiate between machines.
@@ -1185,7 +1187,7 @@
 #define XY_PROBE_FEEDRATE (200*60)
 
 // Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
-#define Z_PROBE_FEEDRATE_FAST (8*60)
+#define Z_PROBE_FEEDRATE_FAST (10*60)
 
 // Feedrate (mm/min) for the "accurate" probe of each point
 #define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 2)
@@ -1243,7 +1245,7 @@
  * Example: `M851 Z-5` with a CLEARANCE of 4  =>  9mm from bed to nozzle.
  *     But: `M851 Z+1` with a CLEARANCE of 2  =>  2mm from bed to nozzle.
  */
-#define Z_CLEARANCE_DEPLOY_PROBE   8 // Z Clearance for Deploy/Stow
+#define Z_CLEARANCE_DEPLOY_PROBE    5 // Z Clearance for Deploy/Stow
 #define Z_CLEARANCE_BETWEEN_PROBES  5 // Z Clearance between probe points
 #define Z_CLEARANCE_MULTI_PROBE     5 // Z Clearance between multiple probes
 //#define Z_AFTER_PROBING           5 // Z position after probing is done
@@ -1252,7 +1254,7 @@
 
 // For M851 give a range for adjusting the Z probe offset
 #define Z_PROBE_OFFSET_RANGE_MIN -2.5
-#define Z_PROBE_OFFSET_RANGE_MAX 1
+#define Z_PROBE_OFFSET_RANGE_MAX 0
 
 // Enable the M48 repeatability test to test probe accuracy
 #if ENABLED(BLTOUCH)
@@ -1285,8 +1287,8 @@
 // Require minimum nozzle and/or bed temperature for probing
 #define PREHEAT_BEFORE_PROBING
 #if ENABLED(PREHEAT_BEFORE_PROBING)
-  #define PROBING_NOZZLE_TEMP 180   // (°C) Only applies to E0 at this time
-  #define PROBING_BED_TEMP     70
+  #define PROBING_NOZZLE_TEMP 120   // (°C) Only applies to E0 at this time
+  #define PROBING_BED_TEMP     50
 #endif
 
 // For Inverting Stepper Enable Pins (Active Low) use 0, Non Inverting (Active High) use 1
@@ -1367,16 +1369,16 @@
 // @section machine
 
 // The size of the printable area
-#define X_BED_SIZE TERN(GP,220,300)
-#define Y_BED_SIZE TERN(GP,220,300)
+#define X_BED_SIZE TERN(GENIUSPRO,220,300)
+#define Y_BED_SIZE TERN(GENIUSPRO,220,300)
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
-#define X_MIN_POS TERN(GP,0,-2)
-#define Y_MIN_POS TERN(GP,0,-5)
+#define X_MIN_POS TERN(GENIUSPRO,0,-2)
+#define Y_MIN_POS TERN(GENIUSPRO,0,-5)
 #define Z_MIN_POS 0
 #define X_MAX_POS X_BED_SIZE
 #define Y_MAX_POS Y_BED_SIZE
-#define Z_MAX_POS TERN(GP,250,400)
+#define Z_MAX_POS TERN(GENIUSPRO,250,400)
 //#define I_MIN_POS 0
 //#define I_MAX_POS 50
 //#define J_MIN_POS 0
@@ -1601,7 +1603,7 @@
 #if EITHER(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
 
   // Set the number of grid points per dimension.
-  #define GRID_MAX_POINTS_X TERN(GP,4,5)
+  #define GRID_MAX_POINTS_X TERN(GENIUSPRO,4,5)
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   // Probe along the Y axis, advancing X after each column
