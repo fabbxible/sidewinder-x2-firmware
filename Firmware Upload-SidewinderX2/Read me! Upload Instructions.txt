@@ -1,3 +1,6 @@
+################
+Update Mainboard
+################
 1. Copy firmware.bin from .pio/build/swx2/firmware.bin to this folder (replace the old file if an older version is present).
 2. Run SWX2_firmware_upload.bat
 3. Power off SWX2.
@@ -6,6 +9,19 @@
 6. Printer screen will start and beep, SWX2_firmware_upload window will run and then close by itself.
 7. Remove the jumper that connect BOOT0 and 3.3V pin.
 8. Wait for mainboard to restart and confirm printer status on printer touch screen.
+
+###################
+Update Touch Screen
+###################
+1. Copy Content of TFT Firmware folder into ROOT (do not put in any folder, do not copy TFT Firmware Folder itself) of SD Card.
+2. Insert SD card into printer sd card slot and press reset button on the bottom right of touch screen and let it run, or power off printer and wait for all lights to go off (unplug USB cable if connected) then power it back on and wait for update process.
+3. On touch screen, go to Tools > File > set it back to USB.
+4. Remove tft firmware file in sd card.
+
+
+
+
+
 
 
 Alternative Method
