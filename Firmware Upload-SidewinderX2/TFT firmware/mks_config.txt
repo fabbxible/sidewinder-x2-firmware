@@ -161,7 +161,7 @@ It will auto heat up if the current temp doesn't reach the target.
 >morefunc1_cmd:M150 R0 U0 B0;
 >morefunc2_cmd:M150 R255 U255 B255;
 >morefunc3_cmd:M290 Z+0.025;M500;
->morefunc4_cmd:M290 Z-0.025;M00;
+>morefunc4_cmd:M290 Z-0.025;M500;
 >morefunc5_cmd:M500;
 >morefunc6_cmd:G28;
 
