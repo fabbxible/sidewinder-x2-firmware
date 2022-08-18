@@ -118,7 +118,7 @@
  *
  * :[2400, 9600, 19200, 38400, 57600, 115200, 250000, 500000, 1000000]
  */
-#define BAUDRATE 250000
+#define BAUDRATE 115200
 #define BAUD_RATE_GCODE     // Enable G-code M575 to set the baud rate
 
 /**
@@ -147,9 +147,9 @@
 
 // Name displayed in the LCD "Ready" message and Info menu
 #if ENABLED(GENIUSPRO)
-  #define CUSTOM_MACHINE_NAME "Artillery Genius Pro EVO"
+  #define CUSTOM_MACHINE_NAME "Fabbxible Genius Pro"
 #elif ENABLED(SIDEWINDERX2)
-  #define CUSTOM_MACHINE_NAME "Artillery Sidewinder X2 EVO"
+  #define CUSTOM_MACHINE_NAME "Fabbxible Sidewinder X2"
 #else
   #error "Undefined Machine"
 #endif
@@ -610,9 +610,9 @@
     #define DEFAULT_Ki_LIST {   1.08,   1.08 }
     #define DEFAULT_Kd_LIST { 114.00, 114.00 }
   #else
-    #define DEFAULT_Kp 19.0423 //Bi-metal 250C, with Silicone Sock
-    #define DEFAULT_Ki  1.7124
-    #define DEFAULT_Kd 52.9376
+    #define DEFAULT_Kp 19.0620 //Ti 210C, with Silicone Sock, 50% Fan 5mm High from bed center
+    #define DEFAULT_Ki  1.7585
+    #define DEFAULT_Kd 51.6580
   #endif
 #endif // PIDTEMP
 
@@ -650,9 +650,9 @@
   //#define PID_BED_DEBUG // Sends debug data to the serial port.
 
   // Genius Pro
-  #define DEFAULT_bedKp 62.75
-  #define DEFAULT_bedKi 9.39
-  #define DEFAULT_bedKd 279.43
+  #define DEFAULT_bedKp TERN(GENIUSPRO, 62.75, 36.4669) //70C
+  #define DEFAULT_bedKi TERN(GENIUSPRO, 9.39, 4.1252)
+  #define DEFAULT_bedKd TERN(GENIUSPRO, 279.43, 214.9116)
 
   // FIND YOUR OWN: "M303 E-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
 #endif // PIDTEMPBED
@@ -719,7 +719,7 @@
  * *** IT IS HIGHLY RECOMMENDED TO LEAVE THIS OPTION ENABLED! ***
  */
 #define PREVENT_COLD_EXTRUSION
-#define EXTRUDE_MINTEMP 175
+#define EXTRUDE_MINTEMP 170
 
 /**
  * Prevent a single extrusion longer than EXTRUDE_MAXLENGTH.
@@ -976,16 +976,16 @@
 #if ENABLED(CLASSIC_JERK)
   #define DEFAULT_XJERK 10.0
   #define DEFAULT_YJERK 10.0
-  #define DEFAULT_ZJERK  0.3
+  #define DEFAULT_ZJERK  0.4
   //#define DEFAULT_IJERK  0.3
   //#define DEFAULT_JJERK  0.3
   //#define DEFAULT_KJERK  0.3
 
   //#define TRAVEL_EXTRA_XYJERK 0.0     // Additional jerk allowance for all travel moves
 
-  //#define LIMITED_JERK_EDITING        // Limit edit via M205 or LCD to DEFAULT_aJERK * 2
+  #define LIMITED_JERK_EDITING        // Limit edit via M205 or LCD to DEFAULT_aJERK * 2
   #if ENABLED(LIMITED_JERK_EDITING)
-    #define MAX_JERK_EDIT_VALUES { 20, 20, 0.6, 10 } // ...or, set your own edit limits
+    #define MAX_JERK_EDIT_VALUES { 15, 15, 0.6, 15 } // ...or, set your own edit limits
   #endif
 #endif
 
@@ -1177,7 +1177,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 27.25, -12.8, 0 }
+#define NOZZLE_TO_PROBE_OFFSET { 27.25, -12.8, -1 }
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
@@ -1187,7 +1187,7 @@
 #define XY_PROBE_FEEDRATE (200*60)
 
 // Feedrate (mm/min) for the first approach when double-probing (MULTIPLE_PROBING == 2)
-#define Z_PROBE_FEEDRATE_FAST (10*60)
+#define Z_PROBE_FEEDRATE_FAST (16*60)
 
 // Feedrate (mm/min) for the "accurate" probe of each point
 #define Z_PROBE_FEEDRATE_SLOW (Z_PROBE_FEEDRATE_FAST / 2)
@@ -1352,7 +1352,7 @@
  */
 //#define Z_IDLE_HEIGHT Z_HOME_POS
 
-#define Z_HOMING_HEIGHT  4      // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...
+#define Z_HOMING_HEIGHT  5      // (mm) Minimal Z height before homing (G28) for Z clearance above the bed, clamps, ...
                                   // Be sure to have this much clearance over your Z_MAX_POS to prevent grinding.
 
 //#define Z_AFTER_HOMING  10      // (mm) Height to move to after homing Z
@@ -1373,8 +1373,8 @@
 #define Y_BED_SIZE TERN(GENIUSPRO,220,300)
 
 // Travel limits (mm) after homing, corresponding to endstop positions.
-#define X_MIN_POS TERN(GENIUSPRO,0,-2)
-#define Y_MIN_POS TERN(GENIUSPRO,0,-5)
+#define X_MIN_POS 0 //TERN(GENIUSPRO,0,-2)
+#define Y_MIN_POS 0 //TERN(GENIUSPRO,0,-5)
 #define Z_MIN_POS 0
 #define X_MAX_POS X_BED_SIZE
 #define Y_MAX_POS Y_BED_SIZE
@@ -1562,7 +1562,7 @@
  * Turn on with the command 'M111 S32'.
  * NOTE: Requires a lot of PROGMEM!
  */
-#define DEBUG_LEVELING_FEATURE
+//#define DEBUG_LEVELING_FEATURE
 
 #if ANY(MESH_BED_LEVELING, AUTO_BED_LEVELING_UBL, PROBE_MANUALLY)
   // Set a height for the start of manual adjustment
@@ -1603,7 +1603,7 @@
 #if EITHER(AUTO_BED_LEVELING_LINEAR, AUTO_BED_LEVELING_BILINEAR)
 
   // Set the number of grid points per dimension.
-  #define GRID_MAX_POINTS_X TERN(GENIUSPRO,4,5)
+  #define GRID_MAX_POINTS_X TERN(GENIUSPRO,4,7)
   #define GRID_MAX_POINTS_Y GRID_MAX_POINTS_X
 
   // Probe along the Y axis, advancing X after each column
@@ -1740,7 +1740,7 @@
 #define Z_SAFE_HOMING
 
 #if ENABLED(Z_SAFE_HOMING)
-  #define Z_SAFE_HOMING_X_POINT X_CENTER  // X point for Z homing
+  #define Z_SAFE_HOMING_X_POINT X_CENTER+1  // X point for Z homing
   #define Z_SAFE_HOMING_Y_POINT Y_CENTER  // Y point for Z homing
 #endif
 
@@ -1824,8 +1824,8 @@
  */
 #define EEPROM_SETTINGS       // Persistent storage with M500 and M501
 //#define DISABLE_M503        // Saves ~2700 bytes of PROGMEM. Disable for release!
-#define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
-#define EEPROM_BOOT_SILENT    // Keep M503 quiet and only give errors during first load
+//#define EEPROM_CHITCHAT       // Give feedback on EEPROM commands. Disable to save PROGMEM.
+//#define EEPROM_BOOT_SILENT    // Keep M503 quiet and only give errors during first load
 #if ENABLED(EEPROM_SETTINGS)
   #define EEPROM_AUTO_INIT  // Init EEPROM automatically on any errors.
 #endif
@@ -1856,7 +1856,7 @@
 // Preheat Constants - Up to 5 are supported without changes
 //
 #define PREHEAT_1_LABEL       "PLA"
-#define PREHEAT_1_TEMP_HOTEND 190
+#define PREHEAT_1_TEMP_HOTEND 200
 #define PREHEAT_1_TEMP_BED     70
 #define PREHEAT_1_TEMP_CHAMBER 35
 #define PREHEAT_1_FAN_SPEED     0 // Value from 0 to 255
