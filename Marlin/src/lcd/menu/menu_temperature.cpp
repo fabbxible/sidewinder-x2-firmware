@@ -69,6 +69,35 @@ void Temperature::lcd_preheat(const uint8_t e, const int8_t indh, const int8_t i
   ui.return_to_status();
 }
 
+#if PREHEAT_COUNT && DISABLED(SLIM_LCD_MENUS)
+  #if ENABLED(FABBXIBLE_MENU)
+    void _menu_temperature_preheat_settings() {
+      #define _MINTEMP_ITEM(N) HEATER_##N##_MINTEMP,
+      #define _MAXTEMP_ITEM(N) HEATER_##N##_MAXTEMP,
+      #define MINTEMP_ALL _MIN(REPEAT(HOTENDS, _MINTEMP_ITEM) 999)
+      #define MAXTEMP_ALL _MAX(REPEAT(HOTENDS, _MAXTEMP_ITEM) 0)
+      const uint8_t m = MenuItemBase::itemIndex;
+      START_MENU();
+      STATIC_ITEM_P(ui.get_preheat_label(m), SS_DEFAULT|SS_INVERT);
+      BACK_ITEM(MSG_CONFIGURATION);
+      #if HAS_FAN
+        editable.uint8 = uint8_t(ui.material_preset[m].fan_speed);
+        EDIT_ITEM_N(percent, m, MSG_FAN_SPEED, &editable.uint8, 0, 255, []{ ui.material_preset[MenuItemBase::itemIndex].fan_speed = editable.uint8; });
+      #endif
+      #if HAS_TEMP_HOTEND
+        EDIT_ITEM(int3, MSG_NOZZLE, &ui.material_preset[m].hotend_temp, MINTEMP_ALL, MAXTEMP_ALL - (HOTEND_OVERSHOOT));
+      #endif
+      #if HAS_HEATED_BED
+        EDIT_ITEM(int3, MSG_BED, &ui.material_preset[m].bed_temp, BED_MINTEMP, BED_MAX_TARGET);
+      #endif
+      #if ENABLED(EEPROM_SETTINGS)
+        ACTION_ITEM(MSG_STORE_EEPROM, ui.store_settings);
+      #endif
+      END_MENU();
+    }
+  #endif
+#endif
+
 #if PREHEAT_COUNT
 
   #if HAS_TEMP_HOTEND
@@ -142,7 +171,7 @@ void Temperature::lcd_preheat(const uint8_t e, const int8_t indh, const int8_t i
 #if HAS_TEMP_HOTEND || HAS_HEATED_BED
 
   void lcd_cooldown() {
-    thermalManager.zero_fan_speeds();
+    TERN(FABBXIBLE_MENU, thermalManager.set_fan_speed(0, 255), thermalManager.zero_fan_speeds());
     thermalManager.disable_all_heaters();
     ui.return_to_status();
   }
@@ -262,18 +291,20 @@ void menu_temperature() {
 
   #endif // HAS_FAN
 
-  #if PREHEAT_COUNT
-    //
-    // Preheat for all Materials
-    //
-    LOOP_L_N(m, PREHEAT_COUNT) {
-      editable.int8 = m;
-      #if HOTENDS > 1 || HAS_HEATED_BED
-        SUBMENU_S(ui.get_preheat_label(m), MSG_PREHEAT_M, menu_preheat_m);
-      #elif HAS_HOTEND
-        ACTION_ITEM_S(ui.get_preheat_label(m), MSG_PREHEAT_M, do_preheat_end_m);
-      #endif
-    }
+  #if DISABLED(FABBXIBLE_MENU)
+    #if PREHEAT_COUNT
+      //
+      // Preheat for all Materials
+      //
+      LOOP_L_N(m, PREHEAT_COUNT) {
+        editable.int8 = m;
+        #if HOTENDS > 1 || HAS_HEATED_BED
+          SUBMENU_S(ui.get_preheat_label(m), MSG_PREHEAT_M, menu_preheat_m);
+        #elif HAS_HOTEND
+          ACTION_ITEM_S(ui.get_preheat_label(m), MSG_PREHEAT_M, do_preheat_end_m);
+        #endif
+      }
+    #endif
   #endif
 
   #if HAS_TEMP_HOTEND || HAS_HEATED_BED
@@ -282,6 +313,18 @@ void menu_temperature() {
     //
     if (TERN0(HAS_HEATED_BED, thermalManager.degTargetBed())) has_heat = true;
     if (has_heat) ACTION_ITEM(MSG_COOLDOWN, lcd_cooldown);
+  #endif
+  
+  // Preheat configurations
+  #if PREHEAT_COUNT && DISABLED(SLIM_LCD_MENUS)
+    #if ENABLED(FABBXIBLE_MENU)
+      LOOP_L_N(m, PREHEAT_COUNT)
+        SUBMENU_N_S(m, ui.get_preheat_label(m), MSG_PREHEAT_M_SETTINGS, _menu_temperature_preheat_settings);
+      
+      #if ENABLED(EEPROM_SETTINGS)
+        ACTION_ITEM(MSG_STORE_EEPROM, ui.store_settings);
+      #endif
+    #endif
   #endif
 
   END_MENU();
@@ -301,6 +344,17 @@ void menu_temperature() {
         ACTION_ITEM_S(ui.get_preheat_label(m), MSG_PREHEAT_M, do_preheat_end_m);
       #endif
     }
+
+    #if ENABLED(FABBXIBLE_MENU)
+      #if HAS_TEMP_HOTEND || HAS_HEATED_BED
+        bool has_heat = false;
+        //
+        // Cooldown
+        //
+        if (TERN0(HAS_HEATED_BED, thermalManager.degTargetBed())) has_heat = true;
+        if (has_heat) ACTION_ITEM(MSG_COOLDOWN, lcd_cooldown);
+      #endif
+    #endif
 
     END_MENU();
   }

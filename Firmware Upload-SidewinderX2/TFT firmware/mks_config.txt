@@ -28,10 +28,9 @@
 >cfg_max_hotbed_temperature:130
 
 #pause position (-1 is invalid; Z-axis is relative position)
->cfg_XPOS:300
->cfg_YPOS:300
+>cfg_XPOS:-1
+>cfg_YPOS:-1
 >cfg_ZADD:20
-
 #-----------------------------------------------------------------------
 #########  Advanced Function Option  ##################################
 
@@ -60,22 +59,22 @@
 #the speed to extrude filament(mm/min)
 >cfg_filament_load_speed:120
 #the lenght to extrude filament (mm)
->cfg_filament_load_length:150
+>cfg_filament_load_length:100
 
 #the speed to retract filament(mm/min)
->cfg_filament_unload_speed:600
+>cfg_filament_unload_speed:300
 #the lenght to retract filament(mm)
->cfg_filament_unload_length:150
+>cfg_filament_unload_length:100
 
 #It is the minimum temperature for filament change.
 It will auto heat up if the current temp doesn't reach the target.
->cfg_filament_load_limit_temperature:190
+>cfg_filament_load_limit_temperature:200
 
 #The length of Load filament before unloader filament. 
 >cfg_unload_retract_length:5
 
 #The speed of load filament  before unloader filament.
->cfg_unload_retract_speed:240
+>cfg_unload_retract_speed:120
 
 #---------------------------------------------------------------------------
 
@@ -85,7 +84,7 @@ It will auto heat up if the current temp doesn't reach the target.
 >cfg_leveling_mode:0
 
 #the command of auto leveling (G29 is available for Marlin.While G32 is for  Repetier and Smoothieware)
->cfg_auto_leveling_cmd:G28;G29;M500;
+>cfg_auto_leveling_cmd:G28;G29;
 
 #the point number of manual leveling:(3,4,5 point available)
 >cfg_point_number:4

@@ -105,6 +105,37 @@
 
 #endif // BABYSTEPPING
 
+#if ENABLED(FABBXIBLE_MENU)
+  #if ENABLED(FWRETRACT)
+
+    #include "../../feature/fwretract.h"
+
+    void menu_tune_retract() {
+      START_MENU();
+      BACK_ITEM(MSG_TUNE);
+      #if ENABLED(FWRETRACT_AUTORETRACT)
+        EDIT_ITEM(bool, MSG_AUTORETRACT, &fwretract.autoretract_enabled, fwretract.refresh_autoretract);
+      #endif
+      EDIT_ITEM(TERN(FABBXIBLE_MENU, float42_52, float52sign), MSG_CONTROL_RETRACT, &fwretract.settings.retract_length, 0, TERN(FABBXIBLE_MENU, 20, 100));
+      #if HAS_MULTI_EXTRUDER
+        EDIT_ITEM(TERN(FABBXIBLE_MENU, float42_52, float52sign), MSG_CONTROL_RETRACT_SWAP, &fwretract.settings.swap_retract_length, 0, TERN(FABBXIBLE_MENU, 20, 100));
+      #endif
+      EDIT_ITEM(float3, MSG_CONTROL_RETRACTF, &fwretract.settings.retract_feedrate_mm_s, 1, TERN(FABBXIBLE_MENU, 100, 999));
+      EDIT_ITEM(TERN(FABBXIBLE_MENU, float42_52, float52sign), MSG_CONTROL_RETRACT_ZHOP, &fwretract.settings.retract_zraise, 0, TERN(FABBXIBLE_MENU, 20, 999));
+      EDIT_ITEM(TERN(FABBXIBLE_MENU, float42_52, float52sign), MSG_CONTROL_RETRACT_RECOVER, &fwretract.settings.retract_recover_extra, TERN(FABBXIBLE_MENU, 0, -100), TERN(FABBXIBLE_MENU, 20, 100));
+      #if HAS_MULTI_EXTRUDER
+        EDIT_ITEM(TERN(FABBXIBLE_MENU, float42_52, float52sign), MSG_CONTROL_RETRACT_RECOVER_SWAP, &fwretract.settings.swap_retract_recover_extra, TERN(FABBXIBLE_MENU, 0, -100), TERN(FABBXIBLE_MENU, 20, 100));
+      #endif
+      EDIT_ITEM(float3, MSG_CONTROL_RETRACT_RECOVERF, &fwretract.settings.retract_recover_feedrate_mm_s, 1, TERN(FABBXIBLE_MENU, 100, 999));
+      #if HAS_MULTI_EXTRUDER
+        EDIT_ITEM(float3, MSG_CONTROL_RETRACT_RECOVER_SWAPF, &fwretract.settings.swap_retract_recover_feedrate_mm_s, 1, TERN(FABBXIBLE_MENU, 100, 999));
+      #endif
+      END_MENU();
+    }
+
+  #endif
+#endif
+
 void menu_tune() {
   START_MENU();
   BACK_ITEM(MSG_MAIN);
@@ -118,7 +149,7 @@ void menu_tune() {
   // Manual bed leveling, Bed Z:
   //
   #if BOTH(MESH_BED_LEVELING, LCD_BED_LEVELING)
-    EDIT_ITEM(float43, MSG_BED_Z, &mbl.z_offset, -1, 1);
+    TERN(FABBXIBLE_MENU,,EDIT_ITEM(float43, MSG_BED_Z, &mbl.z_offset, -1, 1));
   #endif
 
   //
@@ -202,6 +233,13 @@ void menu_tune() {
       LOOP_L_N(n, EXTRUDERS)
         EDIT_ITEM_N(int3, n, MSG_FLOW_N, &planner.flow_percentage[n], 10, 999, []{ planner.refresh_e_factor(MenuItemBase::itemIndex); });
     #endif
+  #endif
+
+  #if ENABLED(FABBXIBLE_MENU)
+    //
+    // Firmware Retract
+    //
+    SUBMENU(MSG_RETRACT, menu_tune_retract);
   #endif
 
   //

@@ -278,13 +278,13 @@ void menu_bed_leveling() {
   // Mesh Bed Leveling Z-Offset
   //
   #if ENABLED(MESH_BED_LEVELING)
-    EDIT_ITEM(float43, MSG_BED_Z, &mbl.z_offset, -1, 1);
+    TERN(FABBXIBLE_MENU,,EDIT_ITEM(float43, MSG_BED_Z, &mbl.z_offset, -1, 1));
   #endif
 
   #if ENABLED(BABYSTEP_ZPROBE_OFFSET)
-    SUBMENU(MSG_ZPROBE_ZOFFSET, lcd_babystep_zoffset);
+    TERN(FABBXIBLE_MENU,,SUBMENU(MSG_ZPROBE_ZOFFSET, lcd_babystep_zoffset));
   #elif HAS_BED_PROBE
-    EDIT_ITEM(LCD_Z_OFFSET_TYPE, MSG_ZPROBE_ZOFFSET, &probe.offset.z, Z_PROBE_OFFSET_RANGE_MIN, Z_PROBE_OFFSET_RANGE_MAX);
+    TERN(FABBXIBLE_MENU,,EDIT_ITEM(LCD_Z_OFFSET_TYPE, MSG_ZPROBE_ZOFFSET, &probe.offset.z, Z_PROBE_OFFSET_RANGE_MIN, Z_PROBE_OFFSET_RANGE_MAX));
   #endif
 
   #if ENABLED(LEVEL_BED_CORNERS)
@@ -292,7 +292,7 @@ void menu_bed_leveling() {
   #endif
 
   #if ENABLED(EEPROM_SETTINGS)
-    ACTION_ITEM(MSG_LOAD_EEPROM, ui.load_settings);
+    TERN(FABBXIBLE_MENU,,ACTION_ITEM(MSG_LOAD_EEPROM, ui.load_settings));
     ACTION_ITEM(MSG_STORE_EEPROM, ui.store_settings);
   #endif
   END_MENU();

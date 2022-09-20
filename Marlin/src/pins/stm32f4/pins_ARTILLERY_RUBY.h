@@ -54,11 +54,11 @@
   #define Y_MAX_PIN          -1
 #endif
 #if (Z_HOME_DIR == 1)
-  #define Z_MIN_PIN          PC2
+  #define Z_MIN_PIN          -1//PC2
   #define Z_MAX_PIN          PA0
 #else
   #define Z_MIN_PIN          PA0
-  #define Z_MAX_PIN          PC2
+  #define Z_MAX_PIN          -1//PC2
 #endif
 
 //
@@ -103,7 +103,8 @@
 //
 // Servos
 //
-#define SERVO0_PIN         PC3
+#define SERVO0_PIN        PC3
+#define Z_MIN_PROBE_PIN   PC2
 
 //
 // SPI
@@ -147,7 +148,7 @@
       #define NEOPIXEL_PIN                      PB9
     #endif
 
-    #define DEFAULT_LCD_CONTRAST                255
+    #define DEFAULT_LCD_CONTRAST                225
   #else
     #define LCD_PINS_RS                         PC15
     #define LCD_PINS_ENABLE                     PB6

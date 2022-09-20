@@ -349,6 +349,7 @@ void _lcd_draw_homing() {
   if (ui.should_draw()) {
     constexpr uint8_t line = (LCD_HEIGHT - 1) / 2;
     MenuItem_static::draw(line, GET_TEXT(MSG_LEVEL_BED_HOMING));
+    TERN_(FABBXIBLE_MENU, MenuItem_static::draw(line + 1, PSTR("Wait for Preheat")));
   }
 }
 

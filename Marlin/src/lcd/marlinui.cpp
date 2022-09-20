@@ -951,9 +951,14 @@ constexpr uint8_t epps = ENCODER_PULSES_PER_STEP;
                   // loop and that the abs of the encoderDiff value is tracked.
                   const float encoderStepRate = encoderMovementSteps / float(ms - lastEncoderMovementMillis) * 1000;
 
-                  if (encoderStepRate >= ENCODER_100X_STEPS_PER_SEC)     encoderMultiplier = 100;
-                  else if (encoderStepRate >= ENCODER_10X_STEPS_PER_SEC) encoderMultiplier = 10;
-
+                  #if ENABLED(FABBXIBLE_MENU)
+                    if (encoderStepRate >= ENCODER_50X_STEPS_PER_SEC) encoderMultiplier = 50;
+                    else if (encoderStepRate >= ENCODER_5X_STEPS_PER_SEC) encoderMultiplier = 5;
+                  #else
+                    if (encoderStepRate >= ENCODER_100X_STEPS_PER_SEC)     encoderMultiplier = 100;
+                    else if (encoderStepRate >= ENCODER_10X_STEPS_PER_SEC) encoderMultiplier = 10;
+                  #endif
+                  
                   // Enable to output the encoder steps per second value
                   //#define ENCODER_RATE_MULTIPLIER_DEBUG
                   #if ENABLED(ENCODER_RATE_MULTIPLIER_DEBUG)

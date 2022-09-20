@@ -85,6 +85,7 @@ namespace Language_zh_CN {
     PROGMEM Language_Str MSG_PREHEAT_M_BEDONLY             = _UxGT("预热 $ 热床");     //MSG_PREHEAT_1 " Bed"
     PROGMEM Language_Str MSG_PREHEAT_M_SETTINGS            = _UxGT("预热 $ 设置");     //MSG_PREHEAT_1 " conf"
   #endif
+  PROGMEM Language_Str MSG_PREHEAT                         = _UxGT("预热");
   PROGMEM Language_Str MSG_PREHEAT_CUSTOM                  = _UxGT("预热自定义");
   PROGMEM Language_Str MSG_COOLDOWN                        = _UxGT("降温");     //"Cooldown"
   PROGMEM Language_Str MSG_CUTTER_FREQUENCY                = _UxGT("切割频率");

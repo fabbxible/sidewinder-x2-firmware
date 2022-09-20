@@ -324,7 +324,7 @@ void menu_main() {
     #endif
 
     #if ENABLED(PREHEAT_SHORTCUT_MENU_ITEM)
-      SUBMENU(MSG_PREHEAT_CUSTOM, menu_preheat_only);
+      SUBMENU(TERN(FABBXIBLE_MENU, MSG_PREHEAT, MSG_PREHEAT_CUSTOM), menu_preheat_only);
     #endif
 
     SUBMENU(MSG_MOTION, menu_motion);
@@ -335,7 +335,7 @@ void menu_main() {
   #endif
 
   #if HAS_TEMPERATURE
-    SUBMENU(MSG_TEMPERATURE, menu_temperature);
+    TERN_(FABBXIBLE_MENU, if (!busy)) SUBMENU(MSG_TEMPERATURE, menu_temperature);
   #endif
 
   #if HAS_POWER_MONITOR
@@ -350,7 +350,7 @@ void menu_main() {
     if (!busy) SUBMENU(MSG_MMU2_MENU, menu_mmu2);
   #endif
 
-  SUBMENU(MSG_CONFIGURATION, menu_configuration);
+  TERN_(FABBXIBLE_MENU, if (!busy)) SUBMENU(MSG_CONFIGURATION, menu_configuration);
 
   #if ENABLED(CUSTOM_MENU_MAIN)
     if (TERN1(CUSTOM_MENU_MAIN_ONLY_IDLE, !busy)) {

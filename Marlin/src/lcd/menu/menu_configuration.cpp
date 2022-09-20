@@ -234,7 +234,10 @@ void menu_advanced_settings();
     ACTION_ITEM(MSG_BLTOUCH_SELFTEST, bltouch._selftest);
     ACTION_ITEM(MSG_BLTOUCH_DEPLOY, bltouch._deploy);
     ACTION_ITEM(MSG_BLTOUCH_STOW, bltouch._stow);
-    ACTION_ITEM(MSG_BLTOUCH_SW_MODE, bltouch._set_SW_mode);
+    TERN(FABBXIBLE_MENU,,ACTION_ITEM(MSG_BLTOUCH_SW_MODE, bltouch._set_SW_mode));
+    #if ENABLED(Z_MIN_PROBE_REPEATABILITY_TEST)
+      TERN_(FABBXIBLE_MENU, GCODES_ITEM(MSG_M48_TEST, PSTR(("G28O\nM48 P10 X" STRINGIFY(_X_HALF_BED) " Y" STRINGIFY(_Y_HALF_BED)))));
+    #endif
     #if ENABLED(BLTOUCH_LCD_VOLTAGE_MENU)
       CONFIRM_ITEM(MSG_BLTOUCH_5V_MODE, MSG_BLTOUCH_5V_MODE, MSG_BUTTON_CANCEL, bltouch._set_5V_mode, nullptr, GET_TEXT(MSG_BLTOUCH_MODE_CHANGE));
       CONFIRM_ITEM(MSG_BLTOUCH_OD_MODE, MSG_BLTOUCH_OD_MODE, MSG_BUTTON_CANCEL, bltouch._set_OD_mode, nullptr, GET_TEXT(MSG_BLTOUCH_MODE_CHANGE));
@@ -311,32 +314,32 @@ void menu_advanced_settings();
 #endif
 
 #if PREHEAT_COUNT && DISABLED(SLIM_LCD_MENUS)
-
-  void _menu_configuration_preheat_settings() {
-    #define _MINTEMP_ITEM(N) HEATER_##N##_MINTEMP,
-    #define _MAXTEMP_ITEM(N) HEATER_##N##_MAXTEMP,
-    #define MINTEMP_ALL _MIN(REPEAT(HOTENDS, _MINTEMP_ITEM) 999)
-    #define MAXTEMP_ALL _MAX(REPEAT(HOTENDS, _MAXTEMP_ITEM) 0)
-    const uint8_t m = MenuItemBase::itemIndex;
-    START_MENU();
-    STATIC_ITEM_P(ui.get_preheat_label(m), SS_DEFAULT|SS_INVERT);
-    BACK_ITEM(MSG_CONFIGURATION);
-    #if HAS_FAN
-      editable.uint8 = uint8_t(ui.material_preset[m].fan_speed);
-      EDIT_ITEM_N(percent, m, MSG_FAN_SPEED, &editable.uint8, 0, 255, []{ ui.material_preset[MenuItemBase::itemIndex].fan_speed = editable.uint8; });
-    #endif
-    #if HAS_TEMP_HOTEND
-      EDIT_ITEM(int3, MSG_NOZZLE, &ui.material_preset[m].hotend_temp, MINTEMP_ALL, MAXTEMP_ALL - (HOTEND_OVERSHOOT));
-    #endif
-    #if HAS_HEATED_BED
-      EDIT_ITEM(int3, MSG_BED, &ui.material_preset[m].bed_temp, BED_MINTEMP, BED_MAX_TARGET);
-    #endif
-    #if ENABLED(EEPROM_SETTINGS)
-      ACTION_ITEM(MSG_STORE_EEPROM, ui.store_settings);
-    #endif
-    END_MENU();
-  }
-
+  #if DISABLED(FABBXIBLE_MENU)
+    void _menu_configuration_preheat_settings() {
+      #define _MINTEMP_ITEM(N) HEATER_##N##_MINTEMP,
+      #define _MAXTEMP_ITEM(N) HEATER_##N##_MAXTEMP,
+      #define MINTEMP_ALL _MIN(REPEAT(HOTENDS, _MINTEMP_ITEM) 999)
+      #define MAXTEMP_ALL _MAX(REPEAT(HOTENDS, _MAXTEMP_ITEM) 0)
+      const uint8_t m = MenuItemBase::itemIndex;
+      START_MENU();
+      STATIC_ITEM_P(ui.get_preheat_label(m), SS_DEFAULT|SS_INVERT);
+      BACK_ITEM(MSG_CONFIGURATION);
+      #if HAS_FAN
+        editable.uint8 = uint8_t(ui.material_preset[m].fan_speed);
+        EDIT_ITEM_N(percent, m, MSG_FAN_SPEED, &editable.uint8, 0, 255, []{ ui.material_preset[MenuItemBase::itemIndex].fan_speed = editable.uint8; });
+      #endif
+      #if HAS_TEMP_HOTEND
+        EDIT_ITEM(int3, MSG_NOZZLE, &ui.material_preset[m].hotend_temp, MINTEMP_ALL, MAXTEMP_ALL - (HOTEND_OVERSHOOT));
+      #endif
+      #if HAS_HEATED_BED
+        EDIT_ITEM(int3, MSG_BED, &ui.material_preset[m].bed_temp, BED_MINTEMP, BED_MAX_TARGET);
+      #endif
+      #if ENABLED(EEPROM_SETTINGS)
+        ACTION_ITEM(MSG_STORE_EEPROM, ui.store_settings);
+      #endif
+      END_MENU();
+    }
+  #endif
 #endif
 
 #if ENABLED(CUSTOM_MENU_CONFIG)
@@ -507,9 +510,9 @@ void menu_configuration() {
   SUBMENU(MSG_ADVANCED_SETTINGS, menu_advanced_settings);
 
   #if ENABLED(BABYSTEP_ZPROBE_OFFSET)
-    SUBMENU(MSG_ZPROBE_ZOFFSET, lcd_babystep_zoffset);
+    TERN(FABBXIBLE_MENU,,SUBMENU(MSG_ZPROBE_ZOFFSET, lcd_babystep_zoffset));
   #elif HAS_BED_PROBE
-    EDIT_ITEM(LCD_Z_OFFSET_TYPE, MSG_ZPROBE_ZOFFSET, &probe.offset.z, Z_PROBE_OFFSET_RANGE_MIN, Z_PROBE_OFFSET_RANGE_MAX);
+    TERN(FABBXIBLE_MENU,,EDIT_ITEM(LCD_Z_OFFSET_TYPE, MSG_ZPROBE_ZOFFSET, &probe.offset.z, Z_PROBE_OFFSET_RANGE_MIN, Z_PROBE_OFFSET_RANGE_MAX));
   #endif
 
   //
@@ -568,8 +571,10 @@ void menu_configuration() {
 
   // Preheat configurations
   #if PREHEAT_COUNT && DISABLED(SLIM_LCD_MENUS)
-    LOOP_L_N(m, PREHEAT_COUNT)
-      SUBMENU_N_S(m, ui.get_preheat_label(m), MSG_PREHEAT_M_SETTINGS, _menu_configuration_preheat_settings);
+    #if DISABLED(FABBXIBLE_MENU)
+      LOOP_L_N(m, PREHEAT_COUNT)
+        SUBMENU_N_S(m, ui.get_preheat_label(m), MSG_PREHEAT_M_SETTINGS, _menu_configuration_preheat_settings);
+    #endif
   #endif
 
   #if ENABLED(SOUND_MENU_ITEM)
@@ -578,10 +583,10 @@ void menu_configuration() {
 
   #if ENABLED(EEPROM_SETTINGS)
     ACTION_ITEM(MSG_STORE_EEPROM, ui.store_settings);
-    if (!busy) ACTION_ITEM(MSG_LOAD_EEPROM, ui.load_settings);
+    TERN(FABBXIBLE_MENU,,if (!busy) ACTION_ITEM(MSG_LOAD_EEPROM, ui.load_settings));
   #endif
 
-  if (!busy) ACTION_ITEM(MSG_RESTORE_DEFAULTS, ui.reset_settings);
+  TERN(FABBXIBLE_MENU,,if (!busy) ACTION_ITEM(MSG_RESTORE_DEFAULTS, ui.reset_settings));
 
   END_MENU();
 }
